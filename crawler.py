@@ -15,6 +15,7 @@ class DriverFactory() :
 
     visited_pages = []
     visited_items = []
+    visited_page_source=[]
     blacklist = "Navigate Up"
     driver = None
 
@@ -36,6 +37,7 @@ class DriverFactory() :
         print(self.visited_pages)
         if self.driver.current_activity not in self.visited_pages :
             self.visited_pages.append(self.driver.current_activity)
+            self.visited_page_source.append(self.driver.page_source)
             list_of_elements = self.driver.find_elements_by_xpath("//*")
             item_dictionary = self.identify_element(list_of_elements)
             if "input" in item_dictionary :
@@ -72,14 +74,15 @@ class DriverFactory() :
                         EC.invisibility_of_element(item)
                         self.wait_for_load_buffer(prev_page_source)
                         # print(self.driver.page_source)
+                        # if len(self.visited_page_source) >=2:
+                        #     if self.driver.page_source == self.visited_page_source[-2] :
+                        #         break
                         if prev_page_source != self.driver.page_source :
                             self.crawl_app()
 
         if start_page_source != self.driver.page_source :
             print("Backing")
-            prev_page_source = self.driver.page_source
             self.driver.back()
-            self.previous_page_load(prev_page_source)
 
     def previous_page_load(self, prev_page_source):
         while (bool(re.search("load", self.driver.page_source, re.IGNORECASE))
@@ -114,7 +117,10 @@ class DriverFactory() :
                     item_dictionary["input"] = item_dictionary["input"] + [item]
                 else :
                     item_dictionary["input"] = [item]
-            elif bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)) :
+            elif (bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE))
+                  or bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)))\
+                    and (str(item.get_attribute("text")) != ""
+                         or str(item.get_attribute("text")) != "" ):
                 if "button" in item_dictionary.keys():
                     item_dictionary["button"] = item_dictionary["button"] + [item]
                 else :
