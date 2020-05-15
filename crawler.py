@@ -53,13 +53,12 @@ class DriverFactory() :
                 for item in list_of_links:
                     print("++++++++++++++++++++++++++++++++++++++")
                     print("=======================================")
-                    if not bool(
-                        re.search(str(item.get_attribute("id")), self.blacklist, re.IGNORECASE)) \
-                            and item not in self.visited_items:
+                    if (not bool(re.search(str(item.get_attribute("id")), self.blacklist, re.IGNORECASE))) \
+                            and (item not in self.visited_items):
                         self.visited_items.append(item)
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
-                        print("clicked item")
+                        print("clicking item")
                         item.click()
                         print("clicked item")
                         # self.action_click(item)
@@ -76,7 +75,7 @@ class DriverFactory() :
                         if prev_page_source != self.driver.page_source:
                             self.crawl_app()
                 self.driver.switch_to.context("NATIVE_APP")
-
+            print(bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)))
             if bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)):
                 list_of_elements = self.driver.find_elements_by_xpath("//*")
                 item_dictionary = self.identify_element(list_of_elements)
