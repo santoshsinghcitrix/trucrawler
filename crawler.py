@@ -48,7 +48,7 @@ class DriverFactory() :
                     for text_to_enter in input_values.keys():
                         if bool(re.search(text_to_enter, str(item.get_attribute("name")) +
                                                          str(item.get_attribute("id")) +
-                                                         str(item.text))):
+                                                         str(item.text), re.IGNORECASE)):
                             item.send_keys(input_values[text_to_enter])
                 for item in list_of_inputs:
                     print("++++++++++++++++++++++++++++++++++++++")
