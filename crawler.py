@@ -30,7 +30,6 @@ class DriverFactory() :
         self.driver.quit()
 
     def crawl_app(self):
-        self.wait_for_load()
         start_activity = self.driver.current_activity
         print(self.driver.current_activity)
         start_page_source=self.driver.page_source
