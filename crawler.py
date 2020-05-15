@@ -1,3 +1,5 @@
+import threading
+
 from appium import webdriver
 from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver import ActionChains
@@ -181,15 +183,31 @@ class DriverFactory() :
         actions.perform()
 
 if __name__ == '__main__':
-    url = "http://127.0.0.1:4723/wd/hub"
-    runner = DriverFactory(url, desired_caps)
-    try :
-        runner.crawl_app()
-    except Exception as e:
-        print(e)
-        runner.visited_pages.clear()
-        runner.driver.back()
-        # os.system('adb shell am force-stop com.citrix.Receiver')
-        # runner.driver.terminate_app("com.citrix.Receiver")
-        # runner.driver.activate_app("com.citrix.Receiver")
-        runner.crawl_app()
+    def run_crawler():
+        url = "http://127.0.0.1:4723/wd/hub"
+        runner = DriverFactory(url, desired_caps)
+        time
+        try :
+            runner.crawl_app()
+        except Exception as e:
+            try:
+                print(e)
+                runner.visited_pages.clear()
+                runner.driver.back()
+                # os.system('adb shell am force-stop com.citrix.Receiver')
+                # runner.driver.terminate_app("com.citrix.Receiver")
+                # runner.driver.activate_app("com.citrix.Receiver")
+                runner.crawl_app()
+            except:
+                pass
+
+
+    t = threading.Thread(target=run_crawler)
+    t.daemon = True
+    t.start()
+    RUNNING_TIME="15"
+    def after_timeout():
+        print
+        "KILL MAIN THREAD: %s" % threading.currentThread().ident
+        raise SystemExit
+    threading.Timer(RUNNING_TIME, after_timeout).start()
