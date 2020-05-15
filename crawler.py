@@ -35,95 +35,93 @@ class DriverFactory() :
         start_page_source=self.driver.page_source
         # print(self.visited_pages)
         # self.visited_pages.append(self.driver.current_activity)
-        if(self.visited_page_source!=self.driver.page_source):
+        if self.driver.page_source not in self.visited_page_source :
             self.visited_page_source.append(self.driver.page_source)
-        print(str(self.driver.contexts))
-        if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
-            current_context="WEBVIEW_com.citrix.Receiver"
-            self.driver.switch_to.context(current_context)
-            try:
-                WebDriverWait(self.driver, 5).until(EC.visibility_of("//a[@href]"))
-            except:
-                pass
-            list_of_links = self.driver.find_elements_by_xpath("//a[@href]")
-            list_of_links = list_of_links + self.driver.find_elements_by_xpath("//button")
-            list_of_inputs = self.driver.find_elements_by_xpath("//input")
-            for item in list_of_inputs:
-                for text_to_enter in input_values.keys():
-                    if bool(re.search(text_to_enter, str(item.get_attribute("name")) +
-                                                     str(item.get_attribute("id")) +
-                                                     str(item.text), re.IGNORECASE)):
-                        item.send_keys(input_values[text_to_enter])
-            for item in list_of_links:
-                print("++++++++++++++++++++++++++++++++++++++")
-                print(str(item.get_attribute("href")))
-                print(self.visited_items)
-                print("=======================================")
-                if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
-                        and item.is_enabled() \
-                        and item.is_displayed() \
-                        and item not in self.visited_items:
-                    self.visited_items.append(item)
-                    activity_name = self.driver.current_activity
-                    prev_page_source = self.driver.page_source
-                    print("clicking item")
-                    try:
-                        item.click()
-                    except:
-                        try:
-                            self.action_click(item)
-                        except:
-                            pass
-                    print("clicked item")
-                    # self.action_click(item)
-                    try:
-                        WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
-                    except:
-                        pass
-                    if (prev_page_source != self.driver.page_source) \
-                            or self.driver.page_source!= self.visited_page_source[-2]:
-                        self.crawl_app()
-            self.driver.switch_to.context("NATIVE_APP")
-        print(bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)))
-        if bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)):
-            try:
-                WebDriverWait(self.driver, 5).until(EC.visibility_of("//*"))
-            except:
-                pass
-            list_of_elements = self.driver.find_elements_by_xpath("//*")
-            item_dictionary = self.identify_element(list_of_elements)
-            if "input" in item_dictionary :
-                for item in item_dictionary["input"] :
+            print(str(self.driver.contexts))
+            if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
+                current_context="WEBVIEW_com.citrix.Receiver"
+                self.driver.switch_to.context(current_context)
+                try:
+                    WebDriverWait(self.driver, 5).until(EC.visibility_of("//a[@href]"))
+                except:
+                    pass
+                list_of_links = self.driver.find_elements_by_xpath("//a[@href]")
+                list_of_links = list_of_links + self.driver.find_elements_by_xpath("//button")
+                list_of_inputs = self.driver.find_elements_by_xpath("//input")
+                for item in list_of_inputs:
                     for text_to_enter in input_values.keys():
-                        if bool(re.search(text_to_enter, str(item.get_attribute("text")) +
-                                                    str(item.get_attribute("class")) +
-                                                    str(item.get_attribute("resource-id")) +
-                                                    str(item.get_attribute("content-desc"))) ):
+                        if bool(re.search(text_to_enter, str(item.get_attribute("name")) +
+                                                         str(item.get_attribute("id")) +
+                                                         str(item.text), re.IGNORECASE)):
                             item.send_keys(input_values[text_to_enter])
-            if "button" in item_dictionary:
-                for item in item_dictionary["button"] :
+                for item in list_of_links:
                     print("++++++++++++++++++++++++++++++++++++++")
-                    print(str(item.get_attribute("content-desc")))
-                    print(self.visited_items)
+                    print(str(item.get_attribute("href")))
+                    # print(self.visited_items)
                     print("=======================================")
-                    if item.is_enabled() \
-                            and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))\
+                    if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
+                            and item.is_enabled() \
+                            and item.is_displayed() \
                             and item not in self.visited_items:
                         self.visited_items.append(item)
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
-                        item.click()
-                        print("Clicking item")
+                        print("clicking item")
+                        try:
+                            item.click()
+                        except:
+                            try:
+                                self.action_click(item)
+                            except:
+                                pass
+                        print("clicked item")
                         # self.action_click(item)
                         try:
                             WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
                         except:
                             pass
-                        EC.invisibility_of_element(item)
-                        self.wait_for_load()
-                        if (prev_page_source != self.driver.page_source) \
-                            or self.driver.page_source!= self.visited_page_source[-2]:
+                        if (prev_page_source != self.driver.page_source) :
                             self.crawl_app()
+                self.driver.switch_to.context("NATIVE_APP")
+            print(bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)))
+            if bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)):
+                try:
+                    WebDriverWait(self.driver, 5).until(EC.visibility_of("//*"))
+                except:
+                    pass
+                list_of_elements = self.driver.find_elements_by_xpath("//*")
+                item_dictionary = self.identify_element(list_of_elements)
+                if "input" in item_dictionary :
+                    for item in item_dictionary["input"] :
+                        for text_to_enter in input_values.keys():
+                            if bool(re.search(text_to_enter, str(item.get_attribute("text")) +
+                                                        str(item.get_attribute("class")) +
+                                                        str(item.get_attribute("resource-id")) +
+                                                        str(item.get_attribute("content-desc"))) ):
+                                item.send_keys(input_values[text_to_enter])
+                if "button" in item_dictionary:
+                    for item in item_dictionary["button"] :
+                        print("++++++++++++++++++++++++++++++++++++++")
+                        print(str(item.get_attribute("content-desc")))
+                        # print(self.visited_items)
+                        print("=======================================")
+                        if item.is_enabled() \
+                                and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))\
+                                and item not in self.visited_items:
+                            self.visited_items.append(item)
+                            activity_name = self.driver.current_activity
+                            prev_page_source = self.driver.page_source
+                            item.click()
+                            print("Clicking item")
+                            # self.action_click(item)
+                            try:
+                                WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
+                            except:
+                                pass
+                            EC.invisibility_of_element(item)
+                            self.wait_for_load()
+                            if (prev_page_source != self.driver.page_source):
+                                self.crawl_app()
 
         if start_page_source != self.driver.page_source :
             print("Backing")
