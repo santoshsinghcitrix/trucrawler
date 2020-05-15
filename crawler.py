@@ -157,10 +157,7 @@ class DriverFactory() :
                     item_dictionary["input"] = item_dictionary["input"] + [item]
                 else :
                     item_dictionary["input"] = [item]
-            elif (bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE))
-                  or bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)))\
-                    and (str(item.get_attribute("text")) != ""
-                         or str(item.get_attribute("text")) != "" ):
+            elif bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)):
                 if "button" in item_dictionary.keys():
                     item_dictionary["button"] = item_dictionary["button"] + [item]
                 else :
