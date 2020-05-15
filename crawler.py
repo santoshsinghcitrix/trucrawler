@@ -125,7 +125,8 @@ class DriverFactory() :
                             except:
                                 pass
                             EC.invisibility_of_element(item)
-                            self.wait_for_load_buffer(prev_page_source)
+                            self.wait_for_load()
+                            # self.wait_for_load_buffer(prev_page_source)
                             # print(self.driver.page_source)
                             # if len(self.visited_page_source) >=2:
                             #     if self.driver.page_source == self.visited_page_source[-2] :
@@ -138,7 +139,7 @@ class DriverFactory() :
             self.driver.back()
 
     def previous_page_load(self, prev_page_source):
-        while (bool(re.search("load", self.driver.page_source, re.IGNORECASE))
+        while (bool(re.search("loading", self.driver.page_source, re.IGNORECASE))
                or bool(re.search("spinner@", self.driver.page_source, re.IGNORECASE))
                or bool((not re.search("clickable=\"true\"", self.driver.page_source, re.IGNORECASE)))
                or bool(re.search("ProgressBar", self.driver.page_source, re.IGNORECASE))
@@ -146,7 +147,7 @@ class DriverFactory() :
             time.sleep(1)
 
     def wait_for_load_buffer(self, prev_page_source):
-        while (bool(re.search("load", self.driver.page_source, re.IGNORECASE))
+        while (bool(re.search("loading", self.driver.page_source, re.IGNORECASE))
                or bool(re.search("spinner@", self.driver.page_source, re.IGNORECASE))
                or bool((not re.search("clickable=\"true\"", self.driver.page_source, re.IGNORECASE)))
                or bool(re.search("ProgressBar", self.driver.page_source, re.IGNORECASE))
@@ -155,7 +156,7 @@ class DriverFactory() :
 
     def wait_for_load(self):
         time.sleep(1)
-        while (bool(re.search("load", self.driver.page_source, re.IGNORECASE))
+        while (bool(re.search("loading", self.driver.page_source, re.IGNORECASE))
                or bool(re.search("spinner@", self.driver.page_source, re.IGNORECASE))
                or bool((not re.search("clickable=\"true\"", self.driver.page_source, re.IGNORECASE)))
                or bool(re.search("ProgressBar", self.driver.page_source, re.IGNORECASE))):
