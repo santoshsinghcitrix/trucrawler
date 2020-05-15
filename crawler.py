@@ -42,7 +42,7 @@ class DriverFactory() :
             if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
                 current_context="WEBVIEW_com.citrix.Receiver"
                 self.driver.switch_to.context(current_context)
-                list_of_links = self.driver.find_elements_by_xpath("//a")
+                list_of_links = self.driver.find_elements_by_xpath("//a[@href]")
                 list_of_inputs = self.driver.find_elements_by_xpath("//input")
                 for item in list_of_inputs:
                     for text_to_enter in input_values.keys():
@@ -52,6 +52,7 @@ class DriverFactory() :
                             item.send_keys(input_values[text_to_enter])
                 for item in list_of_links:
                     print("++++++++++++++++++++++++++++++++++++++")
+                    print(str(item.get_attribute("href")))
                     print("=======================================")
                     if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) :
                         self.visited_items.append(item)
@@ -61,7 +62,10 @@ class DriverFactory() :
                         try:
                             item.click()
                         except:
-                            self.action_click(item)
+                            try:
+                                self.action_click(item)
+                            except:
+                                pass
                         print("clicked item")
                         # self.action_click(item)
                         try:
