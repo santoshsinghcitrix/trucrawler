@@ -38,30 +38,25 @@ class DriverFactory() :
         if self.driver.current_activity not in self.visited_pages :
             self.visited_pages.append(self.driver.current_activity)
             self.visited_page_source.append(self.driver.page_source)
-            list_of_elements = self.driver.find_elements_by_xpath("//*")
-            item_dictionary = self.identify_element(list_of_elements)
-            if "input" in item_dictionary :
-                for item in item_dictionary["input"] :
+            if bool(re.search("WEBVIEW_com.citrix.Receiver", self.driver.contexts, re.IGNORECASE)) :
+                current_context="WEBVIEW_com.citrix.Receiver"
+                self.driver.switch_to.context(current_context)
+                list_of_links = self.driver.find_elements_by_xpath("//a")
+                list_of_inputs = self.driver.find_elements_by_xpath("//input")
+                for item in list_of_inputs:
                     for text_to_enter in input_values.keys():
-                        if bool(re.search(text_to_enter, str(item.get_attribute("text")) +
-                                                    str(item.get_attribute("class")) +
-                                                    str(item.get_attribute("resource-id")) +
-                                                    str(item.get_attribute("content-desc"))) ):
+                        if bool(re.search(text_to_enter, str(item.get_attribute("name")) +
+                                                         str(item.get_attribute("id")) +
+                                                         str(item.text))):
                             item.send_keys(input_values[text_to_enter])
-            if "button" in item_dictionary:
-                for item in item_dictionary["button"] :
+                for item in list_of_inputs:
                     print("++++++++++++++++++++++++++++++++++++++")
-                    print(str(item.get_attribute("content-desc")))
-                    print(item.is_enabled())
-                    print(bool(item.get_attribute("clickable")))
-                    print(bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)))
                     print("=======================================")
                     if item.is_enabled() \
-                            and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))\
+                            and not bool(
+                        re.search(str(item.get_attribute("id")), self.blacklist, re.IGNORECASE)) \
                             and item not in self.visited_items:
                         self.visited_items.append(item)
-                        print(item.get_attribute("class"))
-                        print(item.get_attribute("text"))
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
                         item.click()
@@ -77,8 +72,52 @@ class DriverFactory() :
                         # if len(self.visited_page_source) >=2:
                         #     if self.driver.page_source == self.visited_page_source[-2] :
                         #         break
-                        if prev_page_source != self.driver.page_source :
+                        if prev_page_source != self.driver.page_source:
                             self.crawl_app()
+                self.driver.switch_to.context("NATIVE_APP")
+
+            else :
+                list_of_elements = self.driver.find_elements_by_xpath("//*")
+                item_dictionary = self.identify_element(list_of_elements)
+                if "input" in item_dictionary :
+                    for item in item_dictionary["input"] :
+                        for text_to_enter in input_values.keys():
+                            if bool(re.search(text_to_enter, str(item.get_attribute("text")) +
+                                                        str(item.get_attribute("class")) +
+                                                        str(item.get_attribute("resource-id")) +
+                                                        str(item.get_attribute("content-desc"))) ):
+                                item.send_keys(input_values[text_to_enter])
+                if "button" in item_dictionary:
+                    for item in item_dictionary["button"] :
+                        print("++++++++++++++++++++++++++++++++++++++")
+                        print(str(item.get_attribute("content-desc")))
+                        print(item.is_enabled())
+                        print(bool(item.get_attribute("clickable")))
+                        print(bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)))
+                        print("=======================================")
+                        if item.is_enabled() \
+                                and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))\
+                                and item not in self.visited_items:
+                            self.visited_items.append(item)
+                            print(item.get_attribute("class"))
+                            print(item.get_attribute("text"))
+                            activity_name = self.driver.current_activity
+                            prev_page_source = self.driver.page_source
+                            item.click()
+                            print("Clicking item")
+                            # self.action_click(item)
+                            try:
+                                WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
+                            except:
+                                pass
+                            EC.invisibility_of_element(item)
+                            self.wait_for_load_buffer(prev_page_source)
+                            # print(self.driver.page_source)
+                            # if len(self.visited_page_source) >=2:
+                            #     if self.driver.page_source == self.visited_page_source[-2] :
+                            #         break
+                            if prev_page_source != self.driver.page_source :
+                                self.crawl_app()
 
         if start_page_source != self.driver.page_source :
             print("Backing")
