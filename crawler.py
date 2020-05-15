@@ -15,7 +15,7 @@ class DriverFactory() :
 
     visited_pages = []
     visited_items = []
-    visited_page_source=[]
+    visited_page_source=[""]
     blacklist = "Navigate Up"
     driver = None
 
