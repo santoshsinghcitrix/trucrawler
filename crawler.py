@@ -38,7 +38,8 @@ class DriverFactory() :
         if self.driver.current_activity not in self.visited_pages :
             self.visited_pages.append(self.driver.current_activity)
             self.visited_page_source.append(self.driver.page_source)
-            if bool(re.search("WEBVIEW_com.citrix.Receiver", self.driver.contexts, re.IGNORECASE)) :
+            print(str(self.driver.contexts))
+            if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
                 current_context="WEBVIEW_com.citrix.Receiver"
                 self.driver.switch_to.context(current_context)
                 list_of_links = self.driver.find_elements_by_xpath("//a")
