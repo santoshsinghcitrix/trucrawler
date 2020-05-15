@@ -54,7 +54,8 @@ class DriverFactory() :
                     print("++++++++++++++++++++++++++++++++++++++")
                     print(str(item.get_attribute("href")))
                     print("=======================================")
-                    if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) :
+                    if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
+                            and item.is_enabled():
                         self.visited_items.append(item)
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
