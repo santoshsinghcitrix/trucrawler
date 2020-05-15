@@ -53,15 +53,15 @@ class DriverFactory() :
                 for item in list_of_links:
                     print("++++++++++++++++++++++++++++++++++++++")
                     print("=======================================")
-                    if item.is_enabled() \
-                            and not bool(
+                    if not bool(
                         re.search(str(item.get_attribute("id")), self.blacklist, re.IGNORECASE)) \
                             and item not in self.visited_items:
                         self.visited_items.append(item)
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
+                        print("clicked item")
                         item.click()
-                        print("Clicking item")
+                        print("clicked item")
                         # self.action_click(item)
                         try:
                             WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
