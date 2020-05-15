@@ -50,7 +50,7 @@ class DriverFactory() :
                                                          str(item.get_attribute("id")) +
                                                          str(item.text), re.IGNORECASE)):
                             item.send_keys(input_values[text_to_enter])
-                for item in list_of_inputs:
+                for item in list_of_links:
                     print("++++++++++++++++++++++++++++++++++++++")
                     print("=======================================")
                     if item.is_enabled() \
