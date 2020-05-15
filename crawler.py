@@ -15,7 +15,7 @@ class DriverFactory() :
 
     visited_pages = []
     visited_items = []
-    visited_page_source=[""]
+    visited_page_source=[]
     blacklist = "Navigate Up"
     driver = None
 
@@ -35,7 +35,7 @@ class DriverFactory() :
         start_page_source=self.driver.page_source
         # print(self.visited_pages)
         # self.visited_pages.append(self.driver.current_activity)
-        if(self.visited_page_source[-1] != self.driver.page_source):
+        if(self.visited_page_source!=self.driver.page_source):
             self.visited_page_source.append(self.driver.page_source)
         print(str(self.driver.contexts))
         if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
@@ -46,7 +46,7 @@ class DriverFactory() :
             except:
                 pass
             list_of_links = self.driver.find_elements_by_xpath("//a[@href]")
-            # list_of_links = list_of_links + self.driver.find_elements_by_xpath("//button")
+            list_of_links = list_of_links + self.driver.find_elements_by_xpath("//button")
             list_of_inputs = self.driver.find_elements_by_xpath("//input")
             for item in list_of_inputs:
                 for text_to_enter in input_values.keys():
@@ -162,7 +162,9 @@ class DriverFactory() :
                     item_dictionary["input"] = item_dictionary["input"] + [item]
                 else :
                     item_dictionary["input"] = [item]
-            elif bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)):
+            elif bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)) \
+                    and (str(item.get_attribute("text")) != ""
+                         or str(item.get_attribute("text")) != ""):
                 if "button" in item_dictionary.keys():
                     item_dictionary["button"] = item_dictionary["button"] + [item]
                 else :
