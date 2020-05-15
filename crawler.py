@@ -45,6 +45,7 @@ class DriverFactory() :
             except:
                 pass
             list_of_links = self.driver.find_elements_by_xpath("//a[@href]")
+            list_of_links = list_of_links + self.driver.find_elements_by_xpath("//button")
             list_of_inputs = self.driver.find_elements_by_xpath("//input")
             for item in list_of_inputs:
                 for text_to_enter in input_values.keys():
