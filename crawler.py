@@ -79,7 +79,8 @@ class DriverFactory() :
                         WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
                     except:
                         pass
-                    if prev_page_source != self.driver.page_source:
+                    if (prev_page_source != self.driver.page_source) \
+                            or self.driver.page_source!= self.visited_page_source[-2]:
                         self.crawl_app()
             self.driver.switch_to.context("NATIVE_APP")
         print(bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)))
@@ -119,7 +120,8 @@ class DriverFactory() :
                             pass
                         EC.invisibility_of_element(item)
                         self.wait_for_load()
-                        if prev_page_source != self.driver.page_source :
+                        if (prev_page_source != self.driver.page_source) \
+                            or self.driver.page_source!= self.visited_page_source[-2]:
                             self.crawl_app()
 
         if start_page_source != self.driver.page_source :
