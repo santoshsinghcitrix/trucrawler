@@ -58,7 +58,10 @@ class DriverFactory() :
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
                         print("clicking item")
-                        item.click()
+                        try:
+                            item.click()
+                        except:
+                            self.action_click(item)
                         print("clicked item")
                         # self.action_click(item)
                         try:
