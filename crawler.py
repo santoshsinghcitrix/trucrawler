@@ -42,6 +42,10 @@ class DriverFactory() :
             if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
                 current_context="WEBVIEW_com.citrix.Receiver"
                 self.driver.switch_to.context(current_context)
+                try:
+                    WebDriverWait(self.driver, 5).until(EC.visibility_of("//a[@href]"))
+                except:
+                    pass
                 list_of_links = self.driver.find_elements_by_xpath("//a[@href]")
                 list_of_inputs = self.driver.find_elements_by_xpath("//input")
                 for item in list_of_inputs:
@@ -73,8 +77,8 @@ class DriverFactory() :
                             WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
                         except:
                             pass
-                        EC.invisibility_of_element(item)
-                        self.wait_for_load_buffer(prev_page_source)
+                        # self.wait_for_load()
+                        # self.wait_for_load_buffer(prev_page_source)
                         # print(self.driver.page_source)
                         # if len(self.visited_page_source) >=2:
                         #     if self.driver.page_source == self.visited_page_source[-2] :
@@ -84,6 +88,10 @@ class DriverFactory() :
                 self.driver.switch_to.context("NATIVE_APP")
             print(bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)))
             if bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)):
+                try:
+                    WebDriverWait(self.driver, 5).until(EC.visibility_of("//*"))
+                except:
+                    pass
                 list_of_elements = self.driver.find_elements_by_xpath("//*")
                 item_dictionary = self.identify_element(list_of_elements)
                 if "input" in item_dictionary :
@@ -118,7 +126,8 @@ class DriverFactory() :
                             except:
                                 pass
                             EC.invisibility_of_element(item)
-                            self.wait_for_load_buffer(prev_page_source)
+                            self.driver.
+                            # self.wait_for_load_buffer(prev_page_source)
                             # print(self.driver.page_source)
                             # if len(self.visited_page_source) >=2:
                             #     if self.driver.page_source == self.visited_page_source[-2] :
