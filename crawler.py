@@ -56,10 +56,10 @@ class DriverFactory() :
                 for item in list_of_links:
                     print("++++++++++++++++++++++++++++++++++++++")
                     print(str(item.get_attribute("href")))
-                    print(list_of_links)
+                    print(len(list_of_links))
                     print("=======================================")
                     if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
-                            and item.is_enabled():
+                            and item.is_enabled() and item not in self.visited_items:
                         self.visited_items.append(item)
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
@@ -100,7 +100,7 @@ class DriverFactory() :
                     for item in item_dictionary["button"] :
                         print("++++++++++++++++++++++++++++++++++++++")
                         print(str(item.get_attribute("content-desc")))
-                        print(item_dictionary["button"])
+                        print(len(item_dictionary["button"]))
                         print("=======================================")
                         if item.is_enabled() \
                                 and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))\
