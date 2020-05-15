@@ -35,7 +35,7 @@ class DriverFactory() :
         start_page_source=self.driver.page_source
         # print(self.visited_pages)
         # self.visited_pages.append(self.driver.current_activity)
-        if(self.visited_page_source!=self.driver.page_source):
+        if(self.visited_page_source[-1] != self.driver.page_source):
             self.visited_page_source.append(self.driver.page_source)
         print(str(self.driver.contexts))
         if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
