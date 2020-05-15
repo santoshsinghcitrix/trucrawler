@@ -33,8 +33,8 @@ class DriverFactory() :
         start_activity = self.driver.current_activity
         print(self.driver.current_activity)
         start_page_source=self.driver.page_source
-        print(self.visited_pages)
-        self.visited_pages.append(self.driver.current_activity)
+        # print(self.visited_pages)
+        # self.visited_pages.append(self.driver.current_activity)
         self.visited_page_source.append(self.driver.page_source)
         print(str(self.driver.contexts))
         if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
@@ -45,7 +45,7 @@ class DriverFactory() :
             except:
                 pass
             list_of_links = self.driver.find_elements_by_xpath("//a[@href]")
-            list_of_links = list_of_links + self.driver.find_elements_by_xpath("//button")
+            # list_of_links = list_of_links + self.driver.find_elements_by_xpath("//button")
             list_of_inputs = self.driver.find_elements_by_xpath("//input")
             for item in list_of_inputs:
                 for text_to_enter in input_values.keys():
@@ -56,7 +56,7 @@ class DriverFactory() :
             for item in list_of_links:
                 print("++++++++++++++++++++++++++++++++++++++")
                 print(str(item.get_attribute("href")))
-                print(len(list_of_links))
+                print(self.visited_items)
                 print("=======================================")
                 if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
                         and item.is_enabled() \
@@ -102,7 +102,7 @@ class DriverFactory() :
                 for item in item_dictionary["button"] :
                     print("++++++++++++++++++++++++++++++++++++++")
                     print(str(item.get_attribute("content-desc")))
-                    print(len(item_dictionary["button"]))
+                    print(self.visited_items)
                     print("=======================================")
                     if item.is_enabled() \
                             and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))\
