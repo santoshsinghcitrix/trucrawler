@@ -126,8 +126,7 @@ class DriverFactory() :
                             except:
                                 pass
                             EC.invisibility_of_element(item)
-                            self.driver.
-                            # self.wait_for_load_buffer(prev_page_source)
+                            self.wait_for_load_buffer(prev_page_source)
                             # print(self.driver.page_source)
                             # if len(self.visited_page_source) >=2:
                             #     if self.driver.page_source == self.visited_page_source[-2] :
