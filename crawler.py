@@ -77,7 +77,7 @@ class DriverFactory() :
                             self.crawl_app()
                 self.driver.switch_to.context("NATIVE_APP")
 
-            else :
+            if bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)):
                 list_of_elements = self.driver.find_elements_by_xpath("//*")
                 item_dictionary = self.identify_element(list_of_elements)
                 if "input" in item_dictionary :
