@@ -56,6 +56,7 @@ class DriverFactory() :
                 for item in list_of_links:
                     print("++++++++++++++++++++++++++++++++++++++")
                     print(str(item.get_attribute("href")))
+                    print(list_of_links)
                     print("=======================================")
                     if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
                             and item.is_enabled():
@@ -76,12 +77,6 @@ class DriverFactory() :
                             WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
                         except:
                             pass
-                        # self.wait_for_load()
-                        # self.wait_for_load_buffer(prev_page_source)
-                        # print(self.driver.page_source)
-                        # if len(self.visited_page_source) >=2:
-                        #     if self.driver.page_source == self.visited_page_source[-2] :
-                        #         break
                         if prev_page_source != self.driver.page_source:
                             self.crawl_app()
                 self.driver.switch_to.context("NATIVE_APP")
@@ -105,16 +100,12 @@ class DriverFactory() :
                     for item in item_dictionary["button"] :
                         print("++++++++++++++++++++++++++++++++++++++")
                         print(str(item.get_attribute("content-desc")))
-                        print(item.is_enabled())
-                        print(bool(item.get_attribute("clickable")))
-                        print(bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)))
+                        print(item_dictionary["button"])
                         print("=======================================")
                         if item.is_enabled() \
                                 and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))\
                                 and item not in self.visited_items:
                             self.visited_items.append(item)
-                            print(item.get_attribute("class"))
-                            print(item.get_attribute("text"))
                             activity_name = self.driver.current_activity
                             prev_page_source = self.driver.page_source
                             item.click()
@@ -126,11 +117,6 @@ class DriverFactory() :
                                 pass
                             EC.invisibility_of_element(item)
                             self.wait_for_load()
-                            # self.wait_for_load_buffer(prev_page_source)
-                            # print(self.driver.page_source)
-                            # if len(self.visited_page_source) >=2:
-                            #     if self.driver.page_source == self.visited_page_source[-2] :
-                            #         break
                             if prev_page_source != self.driver.page_source :
                                 self.crawl_app()
 
