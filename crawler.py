@@ -214,7 +214,7 @@ if __name__ == '__main__':
         raise SystemExit
     threading.Timer(constants.RUNNING_TIME, after_timeout).start()
     data = []
-    files_list = glob.glob("images*")
+    files_list = glob.glob(os.path.join(constants.ROOT_DIR,"images") + "*")
     print(files_list)
     for image in files_list :
         data.append({"name" : image})
