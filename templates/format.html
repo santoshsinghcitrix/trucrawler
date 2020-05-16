@@ -1,27 +1,83 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-        <meta charset="UTF-8">
-        <title>{{ title }}</title>
-  </head>
-  <body>
-<h1>{{ title }}</h1>
+<head>
+<meta charset="UTF-8">
 
 <style>
-  span {
-      display: inline-block;
-  }
-  img {
-      width: 10%;
-  }
+.header {
+  padding: 0.035px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+  font-size: 20px;
+}
+div.gallery {
+  border: 1px solid #ccc;
+}
 
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.responsive {
+  padding: 0 6px;
+  float: left;
+  width: 24.99999%;
+}
+
+@media only screen and (max-width: 700px) {
+  .responsive {
+    width: 49.99999%;
+    margin: 6px 0;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .responsive {
+    width: 100%;
+  }
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 </style>
-  <ul>
-  {% for person in people %}
-    <span>
-          <img src={{ person.name }} alt="TrueCrawlerImage">
-    </span>
-  {% endfor %}
-  </ul>
-  </body>
+</head>
+<body>
+
+<div class="header" id="myHeader">
+  <h1>True Crawler Snapshots</h1>
+  <p>Click on below image to expand</p>
+</div>
+
+{% for person in people %}
+<div class="responsive">
+  <div class="gallery">
+    <a target="_blank" href={{ person.name }}>
+      <img src={{ person.name }} alt="True Crawler" width="400" height="600">
+    </a>
+    <div class="desc">{{ person.description }}</div>
+  </div>
+</div>
+{% endfor %}
+
+<div class="clearfix"></div>
+
+</body>
 </html>
