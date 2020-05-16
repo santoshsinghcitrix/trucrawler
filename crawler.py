@@ -247,15 +247,15 @@ if __name__ == '__main__':
     #ADB log closure
     print("Logging Crash logs and Adb Logs")
     os.system("adb logcat -d > " + os.path.join(constants.ROOT_DIR,"ADB_LOGS.txt"))
-    crashlog.terminate()
+    # crashlog.terminate()
 
     #Comparison
     comparison_process = Process(target=comapare_data)
     comparison_process.start()
-    comparison_process.terminate()
+    # comparison_process.terminate()
 
     #Reporting
     action_process2 = Process(target=report)
     action_process2.start()
-    action_process2.terminate()
+    # action_process2.terminate()
 
