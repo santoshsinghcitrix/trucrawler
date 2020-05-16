@@ -220,11 +220,16 @@ def report():
             data.append({"name" : image})
         reporting.reporting(data, "TrueCrawler", "test.html")
 
+def crash_log_report():
+    print("Starting crash log")
+    os.system("adb logcat AndroidRuntime:E *:S > " + os.path.join(constants.ROOT_DIR,"CRASH_LOGS.txt"))
 
 if __name__ == '__main__':
 
     #ADB logs
     os.system(f"adb logcat -c")
+    crashlog = Process(target=crash_log_report)
+    crashlog.start()
 
     #Crawler Run
     action_process = Process(target=run_crawler)
@@ -235,7 +240,7 @@ if __name__ == '__main__':
     #ADB log closure
     print("Logging Crash logs and Adb Logs")
     os.system("adb logcat -d > " + os.path.join(constants.ROOT_DIR,"ADB_LOGS.txt"))
-    os.system("adb logcat AndroidRuntime:E *:S > " + os.path.join(constants.ROOT_DIR,"CRASH_LOGS.txt"))
+    crashlog.terminate()
 
     #Reporting
     action_process2 = Process(target=report)
