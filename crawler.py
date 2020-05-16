@@ -18,6 +18,7 @@ class DriverFactory() :
 
     visited_pages = []
     visited_page_source=[]
+    visited_items = []
     blacklist = "Navigate Up"
     driver = None
     count=0
@@ -63,7 +64,9 @@ class DriverFactory() :
                     print("=======================================")
                     if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
                             and item.is_enabled() \
-                            and item.is_displayed() :
+                            and item.is_displayed() \
+                            and item not in self.visited_items :
+                        self.visited_items.append(item)
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
                         print("clicking item")
@@ -107,7 +110,9 @@ class DriverFactory() :
                         print(str(item.get_attribute("content-desc")))
                         print("=======================================")
                         if item.is_enabled() \
-                                and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE)) :
+                                and (not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))) \
+                                and item not in self.visited_items:
+                            self.visited_items.append(item)
                             activity_name = self.driver.current_activity
                             prev_page_source = self.driver.page_source
                             try:
@@ -211,7 +216,8 @@ if __name__ == '__main__':
     def after_timeout():
         print
         "KILL MAIN THREAD: %s" % threading.currentThread().ident
-        raise SystemExit
+        # raise SystemExit
+        t.join()
     threading.Timer(constants.RUNNING_TIME, after_timeout).start()
     data = []
     files_list = glob.glob(os.path.join(constants.ROOT_DIR,"images") + "*")
