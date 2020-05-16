@@ -240,4 +240,4 @@ if __name__ == '__main__':
     #Reporting
     action_process2 = Process(target=report)
     action_process2.start()
-    action_process.terminate()
+    action_process2.terminate()
