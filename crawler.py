@@ -182,8 +182,10 @@ class DriverFactory() :
         actions.perform()
 
     def take_screenshot(self):
-        file_name = 'screenshot'+ self.count +'.png'
-        self.driver.save_screenshot("images/" + file_name)
+        file_name = 'screenshot'+ str(self.count) +'.png'
+        filepath = os.path.join(constants.ROOT_DIR,"images", file_name)
+        print(filepath)
+        self.driver.save_screenshot(filepath)
         self.count= self.count +1
 
 if __name__ == '__main__':
@@ -212,7 +214,8 @@ if __name__ == '__main__':
         raise SystemExit
     threading.Timer(constants.RUNNING_TIME, after_timeout).start()
     data = []
-    files_list = glob.glob("*")
+    files_list = glob.glob("images*")
+    print(files_list)
     for image in files_list :
         data.append({"name" : image})
     reporting.reporting(data, "TrueCrawler", "test.html")
