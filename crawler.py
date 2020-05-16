@@ -201,7 +201,7 @@ class DriverFactory() :
         self.count= self.count +1
 
 
-def run_crawler():
+def run_crawler(runner):
     while(1):
         try :
             runner.crawl_app()
@@ -239,7 +239,7 @@ if __name__ == '__main__':
     runner = DriverFactory(url, desired_caps)
 
     #Crawler Run
-    action_process = Process(target=run_crawler)
+    action_process = Process(target=run_crawler,args=(runner,))
     action_process.start()
     action_process.join(timeout=constants.RUNNING_TIME)
     action_process.terminate()
