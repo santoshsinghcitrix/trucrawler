@@ -11,7 +11,8 @@ import constants
 import re
 import time
 import os
-
+import reporting
+import glob
 
 class DriverFactory() :
 
@@ -19,6 +20,7 @@ class DriverFactory() :
     visited_page_source=[]
     blacklist = "Navigate Up"
     driver = None
+    count=0
 
 
     def __init__(self, url, desired_caps):
@@ -43,7 +45,7 @@ class DriverFactory() :
                 current_context="WEBVIEW_com.citrix.Receiver"
                 self.driver.switch_to.context(current_context)
                 try:
-                    WebDriverWait(self.driver, 5).until(EC.visibility_of("//a[@href]"))
+                    WebDriverWait(self.driver, constants.SMALL_TIMEOUT).until(EC.visibility_of("//a[@href]"))
                 except:
                     pass
                 list_of_links = self.driver.find_elements_by_xpath("//a[@href]")
@@ -75,9 +77,10 @@ class DriverFactory() :
                         print("clicked item")
                         # self.action_click(item)
                         try:
-                            WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
+                            WebDriverWait(self.driver, constants.TIMEOUT).until(EC.invisibility_of_element(item))
                         except:
                             pass
+                        self.take_screenshot()
                         if (prev_page_source != self.driver.page_source) :
                             self.crawl_app()
                 self.driver.switch_to.context("NATIVE_APP")
@@ -85,7 +88,7 @@ class DriverFactory() :
             print(bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)))
             if bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)):
                 try:
-                    WebDriverWait(self.driver, 5).until(EC.visibility_of("//*"))
+                    WebDriverWait(self.driver, constants.SMALL_TIMEOUT).until(EC.visibility_of("//*"))
                 except:
                     pass
                 list_of_elements = self.driver.find_elements_by_xpath("//*")
@@ -117,11 +120,12 @@ class DriverFactory() :
                             # item.click()
                             print("Clicking item")
                             try:
-                                WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
+                                WebDriverWait(self.driver, constants.TIMEOUT).until(EC.invisibility_of_element(item))
                             except:
                                 pass
                             EC.invisibility_of_element(item)
                             self.wait_for_load()
+                            self.take_screenshot()
                             if (prev_page_source != self.driver.page_source):
                                 self.crawl_app()
         #BACK BUTTON
@@ -130,20 +134,24 @@ class DriverFactory() :
             self.driver.back()
 
     def wait_for_load_buffer(self, prev_page_source):
+        TIMEOUT = constants.LARGE_TIMEOUTS
         while (bool(re.search("loading", self.driver.page_source, re.IGNORECASE))
                or bool(re.search("spinner@", self.driver.page_source, re.IGNORECASE))
                or bool((not re.search("clickable=\"true\"", self.driver.page_source, re.IGNORECASE)))
                or bool(re.search("ProgressBar", self.driver.page_source, re.IGNORECASE))
-               or prev_page_source == self.driver.page_source):
+               or prev_page_source == self.driver.page_source)  and TIMEOUT>0 :
             time.sleep(1)
+            TIMEOUT = TIMEOUT-1
 
     def wait_for_load(self):
+        TIMEOUT = constants.LARGE_TIMEOUTS
         time.sleep(1)
         while (bool(re.search("loading", self.driver.page_source, re.IGNORECASE))
                or bool(re.search("spinner@", self.driver.page_source, re.IGNORECASE))
                or bool((not re.search("clickable=\"true\"", self.driver.page_source, re.IGNORECASE)))
-               or bool(re.search("ProgressBar", self.driver.page_source, re.IGNORECASE))):
+               or bool(re.search("ProgressBar", self.driver.page_source, re.IGNORECASE))) and TIMEOUT>0:
             time.sleep(1)
+            TIMEOUT = TIMEOUT-1
 
     def identify_element(self, list_of_elements):
         item_dictionary = {}
@@ -173,6 +181,11 @@ class DriverFactory() :
         actions.click()
         actions.perform()
 
+    def take_screenshot(self):
+        file_name = 'screenshot'+ self.count +'.png'
+        self.driver.save_screenshot("images/" + file_name)
+        self.count= self.count +1
+
 if __name__ == '__main__':
     def run_crawler():
         url = "http://127.0.0.1:4723/wd/hub"
@@ -193,9 +206,14 @@ if __name__ == '__main__':
     t = threading.Thread(target=run_crawler)
     t.daemon = True
     t.start()
-    RUNNING_TIME="15"
+
     def after_timeout():
         print
         "KILL MAIN THREAD: %s" % threading.currentThread().ident
         raise SystemExit
-    threading.Timer(RUNNING_TIME, after_timeout).start()
+    threading.Timer(constants.RUNNING_TIME, after_timeout).start()
+    data = []
+    files_list = glob.glob("*")
+    for image in files_list :
+        data.append({"name" : image})
+    reporting.reporting(data, "TrueCrawler", "test.html")
