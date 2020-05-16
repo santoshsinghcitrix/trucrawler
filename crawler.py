@@ -194,14 +194,15 @@ class DriverFactory() :
 
     def take_screenshot(self, hashed_page):
         print("{:07d}".format(self.count))
-        file_name = str("{:07d}".format(self.count)) + str(hashed_page) +'.png'
+        file_name = str("{:07d}".format(self.count)) + "__" + str(hashed_page) +'.png'
         filepath = os.path.join(constants.ROOT_DIR,"images", file_name)
         print(filepath)
         self.driver.save_screenshot(filepath)
         self.count= self.count +1
 
 
-def run_crawler(runner):
+def run_crawler():
+    runner = DriverFactory(url, desired_caps)
     while(1):
         try :
             runner.crawl_app()
@@ -236,10 +237,9 @@ if __name__ == '__main__':
     crashlog = Process(target=crash_log_report)
     crashlog.start()
 
-    runner = DriverFactory(url, desired_caps)
 
     #Crawler Run
-    action_process = Process(target=run_crawler,args=(runner,))
+    action_process = Process(target=run_crawler)
     action_process.start()
     action_process.join(timeout=constants.RUNNING_TIME)
     action_process.terminate()
@@ -250,7 +250,7 @@ if __name__ == '__main__':
     crashlog.terminate()
 
     #Comparison
-    comparison_process = Process(target=comapare_data,args=(runner.visited_page_source,))
+    comparison_process = Process(target=comapare_data)
     comparison_process.start()
     comparison_process.terminate()
 

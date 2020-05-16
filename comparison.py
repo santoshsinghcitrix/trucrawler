@@ -1,13 +1,16 @@
 import hashlib
 import json
+import glob
+import os
+import constants
 
 
-def comapare_data(current_pagesource_data):
+def comapare_data():
     hashed_current_pagesource_data = []
     diff = []
-    for pagesource in current_pagesource_data:
-        result = hashlib.sha256(pagesource.encode())
-        hashed_current_pagesource_data.append(result)
+    files_list = glob.glob(os.path.join(constants.ROOT_DIR, "images", '') + "*")
+    for file_name in files_list :
+        hashed_current_pagesource_data.append(file_name.split("__")[1].split(".png")[0])
 
     f = open('previous_pagesources.json', "r")
     previous_hashed_data = json.loads(f.read())
@@ -19,3 +22,4 @@ def comapare_data(current_pagesource_data):
     all_data = previous_hashed_data + diff
     with open("previous_pagesources.json", "w") as jsonFile:
         json.dump(all_data, jsonFile)
+    print(diff)
