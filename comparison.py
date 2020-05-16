@@ -22,5 +22,7 @@ def comapare_data():
     all_data = previous_hashed_data + diff
     with open("previous_pagesources.json", "w") as jsonFile:
         json.dump(all_data, jsonFile)
+    with open("diff.json", "w") as jsonFile:
+        json.dump(diff, jsonFile)
     print("Diff::")
     print(diff)

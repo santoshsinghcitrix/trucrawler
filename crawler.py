@@ -223,8 +223,8 @@ def report():
         print("FILES:")
         print(files_list)
         for image in files_list :
-            data.append({"name" : image})
-        reporting.reporting(data, "TrueCrawler", "test.html")
+            data.append({"name" : image , "description": "ID: "+ str(image.split("__")[1].split(".png")[0])})
+        reporting.reporting(data, "TrueCrawler", "snapshots.html")
 
 def crash_log_report():
     print("Starting crash log")
