@@ -16,7 +16,6 @@ import os
 class DriverFactory() :
 
     visited_pages = []
-    visited_items = []
     visited_page_source=[]
     blacklist = "Navigate Up"
     driver = None
@@ -35,11 +34,11 @@ class DriverFactory() :
         start_activity = self.driver.current_activity
         print(self.driver.current_activity)
         start_page_source=self.driver.page_source
-        # print(self.visited_pages)
-        # self.visited_pages.append(self.driver.current_activity)
         if self.driver.page_source not in self.visited_page_source :
             self.visited_page_source.append(self.driver.page_source)
             print(str(self.driver.contexts))
+
+            #WEBVIEW
             if bool(re.search("WEBVIEW_com.citrix.Receiver", str(self.driver.contexts), re.IGNORECASE)) :
                 current_context="WEBVIEW_com.citrix.Receiver"
                 self.driver.switch_to.context(current_context)
@@ -59,13 +58,10 @@ class DriverFactory() :
                 for item in list_of_links:
                     print("++++++++++++++++++++++++++++++++++++++")
                     print(str(item.get_attribute("href")))
-                    # print(self.visited_items)
                     print("=======================================")
                     if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
                             and item.is_enabled() \
-                            and item.is_displayed() \
-                            and item not in self.visited_items:
-                        self.visited_items.append(item)
+                            and item.is_displayed() :
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
                         print("clicking item")
@@ -85,6 +81,7 @@ class DriverFactory() :
                         if (prev_page_source != self.driver.page_source) :
                             self.crawl_app()
                 self.driver.switch_to.context("NATIVE_APP")
+            #NATIVE
             print(bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)))
             if bool(re.search("NATIVE", str(self.driver.contexts), re.IGNORECASE)):
                 try:
@@ -105,17 +102,20 @@ class DriverFactory() :
                     for item in item_dictionary["button"] :
                         print("++++++++++++++++++++++++++++++++++++++")
                         print(str(item.get_attribute("content-desc")))
-                        # print(self.visited_items)
                         print("=======================================")
                         if item.is_enabled() \
-                                and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))\
-                                and item not in self.visited_items:
-                            self.visited_items.append(item)
+                                and not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE)) :
                             activity_name = self.driver.current_activity
                             prev_page_source = self.driver.page_source
-                            item.click()
+                            try:
+                                item.click()
+                            except:
+                                try:
+                                    self.action_click(item)
+                                except:
+                                    pass
+                            # item.click()
                             print("Clicking item")
-                            # self.action_click(item)
                             try:
                                 WebDriverWait(self.driver, 10).until(EC.invisibility_of_element(item))
                             except:
@@ -124,18 +124,10 @@ class DriverFactory() :
                             self.wait_for_load()
                             if (prev_page_source != self.driver.page_source):
                                 self.crawl_app()
-
+        #BACK BUTTON
         if start_page_source != self.driver.page_source :
             print("Backing")
             self.driver.back()
-
-    def previous_page_load(self, prev_page_source):
-        while (bool(re.search("loading", self.driver.page_source, re.IGNORECASE))
-               or bool(re.search("spinner@", self.driver.page_source, re.IGNORECASE))
-               or bool((not re.search("clickable=\"true\"", self.driver.page_source, re.IGNORECASE)))
-               or bool(re.search("ProgressBar", self.driver.page_source, re.IGNORECASE))
-               or prev_page_source == self.driver.page_source):
-            time.sleep(1)
 
     def wait_for_load_buffer(self, prev_page_source):
         while (bool(re.search("loading", self.driver.page_source, re.IGNORECASE))
@@ -154,7 +146,6 @@ class DriverFactory() :
             time.sleep(1)
 
     def identify_element(self, list_of_elements):
-        # list_of_elements = self.driver.find_elements_by_xpath("//*")
         item_dictionary = {}
         for item in list_of_elements:
             if bool(re.search("EditText", str(item.get_attribute("class")), re.IGNORECASE)):
@@ -194,9 +185,6 @@ if __name__ == '__main__':
                 print(e)
                 runner.visited_pages.clear()
                 runner.driver.back()
-                # os.system('adb shell am force-stop com.citrix.Receiver')
-                # runner.driver.terminate_app("com.citrix.Receiver")
-                # runner.driver.activate_app("com.citrix.Receiver")
                 runner.crawl_app()
             except:
                 pass
