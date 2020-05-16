@@ -6,10 +6,21 @@
   </head>
   <body>
 <h1>{{ title }}</h1>
+
+<style>
+  span {
+      display: inline-block;
+  }
+  img {
+      width: 10%;
+  }
+
+</style>
   <ul>
   {% for person in people %}
-    <img src={{ person.name }} alt="Mountain">
-    >>
+    <span>
+          <img src={{ person.name }} alt="TrueCrawlerImage">
+    </span>
   {% endfor %}
   </ul>
   </body>
