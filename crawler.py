@@ -188,7 +188,8 @@ class DriverFactory() :
         actions.perform()
 
     def take_screenshot(self):
-        file_name = 'screenshot'+ str(self.count) +'.png'
+        print("{:07d}".format(self.count))
+        file_name = str("{:07d}".format(self.count)) +'.png'
         filepath = os.path.join(constants.ROOT_DIR,"images", file_name)
         print(filepath)
         self.driver.save_screenshot(filepath)
@@ -197,7 +198,6 @@ class DriverFactory() :
 def run_crawler():
     url = "http://127.0.0.1:4723/wd/hub"
     runner = DriverFactory(url, desired_caps)
-    time
     try :
         runner.crawl_app()
     except Exception as e:
@@ -219,31 +219,25 @@ def report():
         for image in files_list :
             data.append({"name" : image})
         reporting.reporting(data, "TrueCrawler", "test.html")
+
+
 if __name__ == '__main__':
 
+    #ADB logs
+    os.system(f"adb logcat -c")
 
-    # t = threading.Thread(target=run_crawler)
-    # t.daemon = True
-    # print("starting therad")
-    # t.start()
-    
-    # def after_timeout():
-    #     print
-    #     "KILL MAIN THREAD: %s" % threading.currentThread().ident
-    #     # raise SystemExit
-    #     t.join()
-    # threading.Timer(constants.RUNNING_TIME, after_timeout).start()
-
+    #Crawler Run
     action_process = Process(target=run_crawler)
     action_process.start()
     action_process.join(timeout=constants.RUNNING_TIME)
     action_process.terminate()
 
+    #ADB log closure
+    print("Logging Crash logs and Adb Logs")
+    os.system("adb logcat -d > " + os.path.join(constants.ROOT_DIR,"ADB_LOGS.txt"))
+    os.system("adb logcat AndroidRuntime:E *:S > " + os.path.join(constants.ROOT_DIR,"CRASH_LOGS.txt"))
 
-
-
-
-
+    #Reporting
     action_process2 = Process(target=report)
     action_process2.start()
     action_process.terminate()
