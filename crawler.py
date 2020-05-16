@@ -1,4 +1,5 @@
 import hashlib
+import sys
 import threading
 
 from appium import webdriver
@@ -232,6 +233,10 @@ def crash_log_report():
 
 
 if __name__ == '__main__':
+
+    if len(sys.argv)>1:
+        constants.RUNNING_TIME = sys.argv[1]
+        print("Running for Duration : "+ str(constants.RUNNING_TIME))
 
     print("___________________________________________________________")
     shutil.rmtree(os.path.join(constants.ROOT_DIR, "images", ''))
