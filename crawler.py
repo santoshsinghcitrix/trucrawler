@@ -13,6 +13,7 @@ import time
 import os
 import reporting
 import glob
+from multiprocessing import Process
 
 class DriverFactory() :
 
@@ -193,35 +194,56 @@ class DriverFactory() :
         self.driver.save_screenshot(filepath)
         self.count= self.count +1
 
-if __name__ == '__main__':
-    def run_crawler():
-        url = "http://127.0.0.1:4723/wd/hub"
-        runner = DriverFactory(url, desired_caps)
-        time
-        try :
+def run_crawler():
+    url = "http://127.0.0.1:4723/wd/hub"
+    runner = DriverFactory(url, desired_caps)
+    time
+    try :
+        runner.crawl_app()
+    except Exception as e:
+        try:
+            print(e)
+            runner.visited_pages.clear()
+            runner.driver.back()
             runner.crawl_app()
         except Exception as e:
-            try:
-                print(e)
-                runner.visited_pages.clear()
-                runner.driver.back()
-                runner.crawl_app()
-            except:
-                pass
+            print(e)
 
 
-    t = threading.Thread(target=run_crawler)
-    t.daemon = True
-    t.start()
-    def after_timeout():
-        print
-        "KILL MAIN THREAD: %s" % threading.currentThread().ident
-        # raise SystemExit
-        t.join()
-    threading.Timer(constants.RUNNING_TIME, after_timeout).start()
-    data = []
-    files_list = glob.glob(os.path.join(constants.ROOT_DIR,"images") + "*")
-    print(files_list)
-    for image in files_list :
-        data.append({"name" : image})
-    reporting.reporting(data, "TrueCrawler", "test.html")
+def report():
+        print("REPORTING::")
+        data = []
+        files_list = glob.glob(os.path.join(constants.ROOT_DIR,"images",'') + "*")
+        print("FILES:")
+        print(files_list)
+        for image in files_list :
+            data.append({"name" : image})
+        reporting.reporting(data, "TrueCrawler", "test.html")
+if __name__ == '__main__':
+
+
+    # t = threading.Thread(target=run_crawler)
+    # t.daemon = True
+    # print("starting therad")
+    # t.start()
+    
+    # def after_timeout():
+    #     print
+    #     "KILL MAIN THREAD: %s" % threading.currentThread().ident
+    #     # raise SystemExit
+    #     t.join()
+    # threading.Timer(constants.RUNNING_TIME, after_timeout).start()
+
+    action_process = Process(target=run_crawler)
+    action_process.start()
+    action_process.join(timeout=constants.RUNNING_TIME)
+    action_process.terminate()
+
+
+
+
+
+
+    action_process2 = Process(target=report)
+    action_process2.start()
+    action_process.terminate()
