@@ -88,7 +88,7 @@ class DriverFactory() :
                         except:
                             pass
                         result = hashlib.sha256(self.driver.page_source.encode())
-                        self.take_screenshot(result)
+                        self.take_screenshot(result.hexdigest())
                         if (prev_page_source != self.driver.page_source) :
                             self.crawl_app()
                 self.driver.switch_to.context("NATIVE_APP")
@@ -136,7 +136,7 @@ class DriverFactory() :
                             EC.invisibility_of_element(item)
                             self.wait_for_load()
                             result = hashlib.sha256(self.driver.page_source.encode())
-                            self.take_screenshot(result)
+                            self.take_screenshot(result.hexdigest())
                             if (prev_page_source != self.driver.page_source):
                                 self.crawl_app()
         #BACK BUTTON
