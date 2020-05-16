@@ -233,35 +233,43 @@ def crash_log_report():
 
 if __name__ == '__main__':
 
+    print("___________________________________________________________")
     shutil.rmtree(os.path.join(constants.ROOT_DIR, "images", ''))
     try:
         os.mkdir(os.path.join(constants.ROOT_DIR, "images", ''))
     except OSError as error:
         print(error)
+    
+    print("___________________________________________________________")
     #ADB logs
     os.system(f"adb logcat -c")
     crashlog = Process(target=crash_log_report)
     crashlog.start()
 
-
+    print("___________________________________________________________")
     #Crawler Run
     action_process = Process(target=run_crawler)
     action_process.start()
     action_process.join(timeout=constants.RUNNING_TIME)
     action_process.terminate()
 
+    print("___________________________________________________________")
     #ADB log closure
     print("Logging Crash logs and Adb Logs")
     os.system("adb logcat -d > " + os.path.join(constants.ROOT_DIR,"ADB_LOGS.txt"))
-    # crashlog.terminate()
+    crashlog.terminate()
 
+    print("___________________________________________________________")
     #Comparison
     comparison_process = Process(target=comapare_data)
     comparison_process.start()
-    # comparison_process.terminate()
+    comparison_process.join()
+    comparison_process.terminate()
 
+    print("___________________________________________________________")
     #Reporting
     action_process2 = Process(target=report)
     action_process2.start()
-    # action_process2.terminate()
+    action_process2.join()
+    action_process2.terminate()
 
