@@ -17,6 +17,7 @@ import glob
 from multiprocessing import Process
 from config import url
 from comparison import comapare_data
+import shutil
 
 class DriverFactory() :
 
@@ -232,6 +233,11 @@ def crash_log_report():
 
 if __name__ == '__main__':
 
+    shutil.rmtree(os.path.join(constants.ROOT_DIR, "images", ''))
+    try:
+        os.mkdir(os.path.join(constants.ROOT_DIR, "images", ''))
+    except OSError as error:
+        print(error)
     #ADB logs
     os.system(f"adb logcat -c")
     crashlog = Process(target=crash_log_report)
