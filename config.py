@@ -16,3 +16,4 @@ input_values = {
     "username" : "smblr\\santoshs",
     "password" : "Sant@9581#"
 }
+url = "http://127.0.0.1:4723/wd/hub"

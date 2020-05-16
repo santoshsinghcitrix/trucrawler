@@ -1,3 +1,4 @@
+import hashlib
 import threading
 
 from appium import webdriver
@@ -14,6 +15,8 @@ import os
 import reporting
 import glob
 from multiprocessing import Process
+from config import url
+from comparison import comapare_data
 
 class DriverFactory() :
 
@@ -84,7 +87,8 @@ class DriverFactory() :
                             WebDriverWait(self.driver, constants.TIMEOUT).until(EC.invisibility_of_element(item))
                         except:
                             pass
-                        self.take_screenshot()
+                        result = hashlib.sha256(self.driver.page_source.encode())
+                        self.take_screenshot(result)
                         if (prev_page_source != self.driver.page_source) :
                             self.crawl_app()
                 self.driver.switch_to.context("NATIVE_APP")
@@ -131,7 +135,8 @@ class DriverFactory() :
                                 pass
                             EC.invisibility_of_element(item)
                             self.wait_for_load()
-                            self.take_screenshot()
+                            result = hashlib.sha256(self.driver.page_source.encode())
+                            self.take_screenshot(result)
                             if (prev_page_source != self.driver.page_source):
                                 self.crawl_app()
         #BACK BUTTON
@@ -187,28 +192,27 @@ class DriverFactory() :
         actions.click()
         actions.perform()
 
-    def take_screenshot(self):
+    def take_screenshot(self, hashed_page):
         print("{:07d}".format(self.count))
-        file_name = str("{:07d}".format(self.count)) +'.png'
+        file_name = str("{:07d}".format(self.count)) + str(hashed_page) +'.png'
         filepath = os.path.join(constants.ROOT_DIR,"images", file_name)
         print(filepath)
         self.driver.save_screenshot(filepath)
         self.count= self.count +1
 
+
 def run_crawler():
-    url = "http://127.0.0.1:4723/wd/hub"
-    runner = DriverFactory(url, desired_caps)
-    try :
-        runner.crawl_app()
-    except Exception as e:
-        try:
-            print(e)
-            runner.visited_pages.clear()
-            runner.driver.back()
+    while(1):
+        try :
             runner.crawl_app()
         except Exception as e:
-            print(e)
-
+            try:
+                print(e)
+                runner.visited_pages.clear()
+                runner.driver.back()
+                runner.crawl_app()
+            except Exception as e:
+                print(e)
 
 def report():
         print("REPORTING::")
@@ -224,12 +228,15 @@ def crash_log_report():
     print("Starting crash log")
     os.system("adb logcat AndroidRuntime:E *:S > " + os.path.join(constants.ROOT_DIR,"CRASH_LOGS.txt"))
 
+
 if __name__ == '__main__':
 
     #ADB logs
     os.system(f"adb logcat -c")
     crashlog = Process(target=crash_log_report)
     crashlog.start()
+
+    runner = DriverFactory(url, desired_caps)
 
     #Crawler Run
     action_process = Process(target=run_crawler)
@@ -242,7 +249,13 @@ if __name__ == '__main__':
     os.system("adb logcat -d > " + os.path.join(constants.ROOT_DIR,"ADB_LOGS.txt"))
     crashlog.terminate()
 
+    #Comparison
+    comparison_process = Process(target=comapare_data,args=(runner.visited_page_source,))
+    comparison_process.start()
+    comparison_process.terminate()
+
     #Reporting
     action_process2 = Process(target=report)
     action_process2.start()
     action_process2.terminate()
+
