@@ -117,11 +117,12 @@ class DriverFactory() :
                         print("++++++++++++++++++++++++++++++++++++++")
                         print(str(item.get_attribute("content-desc")))
                         print("=======================================")
-                        item_source = ''.join([item.get_attribute(i) for i in self.tags_for_source])
+                        item_source = ''.join([str(item.get_attribute(i)) for i in self.tags_for_source])
                         if item.is_enabled() \
                                 and (not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))) \
                                 and item_source not in self.visited_items:
                             self.visited_items.append(item_source)
+                            print("item_source: " + item_source)
                             activity_name = self.driver.current_activity
                             prev_page_source = self.driver.page_source
                             try:
@@ -143,6 +144,14 @@ class DriverFactory() :
                             self.take_screenshot(result.hexdigest())
                             if (prev_page_source != self.driver.page_source):
                                 self.crawl_app()
+        else:
+            print("Backing")
+            self.driver.back()
+            # try : 
+            #     self.driver.activate_app()
+            # except: 
+            #     pass
+
         #BACK BUTTON
         if start_page_source != self.driver.page_source :
             print("Backing")
@@ -176,9 +185,7 @@ class DriverFactory() :
                     item_dictionary["input"] = item_dictionary["input"] + [item]
                 else :
                     item_dictionary["input"] = [item]
-            elif bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)) \
-                    and (str(item.get_attribute("text")) != ""
-                         or str(item.get_attribute("text")) != ""):
+            elif bool(re.search("button", str(item.get_attribute("class")), re.IGNORECASE)):
                 if "button" in item_dictionary.keys():
                     item_dictionary["button"] = item_dictionary["button"] + [item]
                 else :
@@ -209,16 +216,21 @@ def run_crawler():
     runner = DriverFactory(url, desired_caps)
     while(1):
         try :
+            runner.visited_pages.clear()
+            runner.driver.activate_app(desired_caps["appPackage"])
             runner.crawl_app()
         except Exception as e:
             try:
                 print(e)
-                runner.driver.activate_app(desired_caps["appPackage"])
                 runner.visited_pages.clear()
-                runner.driver.back()
+                runner.driver.terminate_app(desired_caps["appPackage"])
+                runner.driver.activate_app(desired_caps["appPackage"])
+                # runner.driver.back()
                 runner.crawl_app()
             except Exception as e:
+                runner.visited_pages.clear()
                 print(e)
+                runner.driver.terminate_app(desired_caps["appPackage"])
 
 def report():
         print("REPORTING::")
@@ -242,7 +254,10 @@ if __name__ == '__main__':
         print("Running for Duration : "+ str(constants.RUNNING_TIME))
 
     print("___________________________________________________________")
-    shutil.rmtree(os.path.join(constants.ROOT_DIR, "images", ''))
+    try :
+        shutil.rmtree(os.path.join(constants.ROOT_DIR, "images", ''))
+    except : 
+        print("files not present ")
     try:
         os.mkdir(os.path.join(constants.ROOT_DIR, "images", ''))
     except OSError as error:
