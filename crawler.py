@@ -28,6 +28,7 @@ class DriverFactory() :
     blacklist = "Navigate Up"
     driver = None
     count=0
+    tags_for_source = ["class", "content-desc", "resource-id", "text", "bounds"]
 
 
     def __init__(self, url, desired_caps):
@@ -116,10 +117,11 @@ class DriverFactory() :
                         print("++++++++++++++++++++++++++++++++++++++")
                         print(str(item.get_attribute("content-desc")))
                         print("=======================================")
+                        item_source = ''.join([item.get_attribute(i) for i in self.tags_for_source])
                         if item.is_enabled() \
                                 and (not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))) \
-                                and item.get_attribute("innerHTML") not in self.visited_items:
-                            self.visited_items.append(item.get_attribute("innerHTML"))
+                                and item_source not in self.visited_items:
+                            self.visited_items.append(item_source)
                             activity_name = self.driver.current_activity
                             prev_page_source = self.driver.page_source
                             try:
