@@ -4,7 +4,9 @@ True Crawler
 
 Definition : 
     
-    True Crawler is an automatic tester for apk which crawls through the APK file provided and creates and executes tests in a self-sustainable automated fashion application and provides results. It will scan through the app in an automated way and provide us the statistical and intelligent comparison against previous builds. 
+    True Crawler is an automatic tester for apk which crawls through the APK file provided and creates and executes 
+    tests in a self-sustainable automated fashion application and provides results. It will scan through the app in an 
+    automated way and provide us the statistical and intelligent comparison against previous builds. 
 
 How is it different from other crawlers? :
 
