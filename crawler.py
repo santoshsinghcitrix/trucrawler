@@ -211,6 +211,7 @@ def run_crawler():
         except Exception as e:
             try:
                 print(e)
+                runner.driver.activate_app(desired_caps["appPackage"])
                 runner.visited_pages.clear()
                 runner.driver.back()
                 runner.crawl_app()
@@ -235,7 +236,7 @@ def crash_log_report():
 if __name__ == '__main__':
 
     if len(sys.argv)>1:
-        constants.RUNNING_TIME = sys.argv[1]
+        constants.RUNNING_TIME = float(sys.argv[1])
         print("Running for Duration : "+ str(constants.RUNNING_TIME))
 
     print("___________________________________________________________")
