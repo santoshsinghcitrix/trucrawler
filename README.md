@@ -14,8 +14,22 @@ Configurations for user specific data
 Tree structure for result with snapshot
 
 
+Results : 
+    1. Snapshots for Run : Contains all the snapshot with their IDs
+    2. Differences : Contains all the difference in runs
+    3. Crash reports : Report logs for crashes
+    4. ADB logs : Adb logs for reports
+    5. Performance 
+    
+How to Run? : 
 
->> GUI structure
->> Comparison 
->> Crawler
->> Reporter
+    1. Configure the Config.py as per the requirement and details like device to run and package names.
+    2. In config.py enter the input strings you want to enter while crawling 
+    3. Now after configuration done , run the below command :
+    
+        python crawler.py <Crawler duration>
+        
+        Crawler duration is the duration to run crawler in seconds
+        
+Results files : 
+    REPORT.html contain the report generated.
