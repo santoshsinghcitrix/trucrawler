@@ -71,8 +71,8 @@ class DriverFactory() :
                     if (not bool(re.search(str(item.get_attribute("href")), self.blacklist, re.IGNORECASE))) \
                             and item.is_enabled() \
                             and item.is_displayed() \
-                            and item not in self.visited_items :
-                        self.visited_items.append(item)
+                            and item.get_attribute("innerHTML") not in self.visited_items :
+                        self.visited_items.append(item.get_attribute("innerHTML"))
                         activity_name = self.driver.current_activity
                         prev_page_source = self.driver.page_source
                         print("clicking item")
@@ -118,8 +118,8 @@ class DriverFactory() :
                         print("=======================================")
                         if item.is_enabled() \
                                 and (not bool(re.search(str(item.get_attribute("content-desc")), self.blacklist, re.IGNORECASE))) \
-                                and item not in self.visited_items:
-                            self.visited_items.append(item)
+                                and item.get_attribute("innerHTML") not in self.visited_items:
+                            self.visited_items.append(item.get_attribute("innerHTML"))
                             activity_name = self.driver.current_activity
                             prev_page_source = self.driver.page_source
                             try:
